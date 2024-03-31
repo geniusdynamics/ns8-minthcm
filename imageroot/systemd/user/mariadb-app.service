@@ -5,8 +5,8 @@
 
 [Unit]
 Description=Podman mariadb-app.service
-BindsTo=kickstart.service
-After=kickstart.service
+BindsTo=minthcm.service
+After=minthcm.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
@@ -17,13 +17,13 @@ TimeoutStopSec=70
 ExecStartPre=/bin/rm -f %t/mariadb-app.pid %t/mariadb-app.ctr-id
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/mariadb-app.pid \
     --cidfile %t/mariadb-app.ctr-id --cgroups=no-conmon \
-    --pod-id-file %t/kickstart.pod-id --replace -d --name mariadb-app \
+    --pod-id-file %t/minthcm.pod-id --replace -d --name mariadb-app \
     --env-file=%S/state/environment \
     --volume mysql-data:/var/lib/mysql/:Z \
     --env MARIADB_ROOT_PASSWORD=Nethesis,1234 \
-    --env MARIADB_DATABASE=kickstart \
-    --env MARIADB_USER=kickstart \
-    --env MARIADB_PASSWORD=kickstart \
+    --env MARIADB_DATABASE=minthcm \
+    --env MARIADB_USER=minthcm \
+    --env MARIADB_PASSWORD=minthcm \
     --env MARIADB_AUTO_UPGRADE=1 \
     ${MARIADB_IMAGE} \
     --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
