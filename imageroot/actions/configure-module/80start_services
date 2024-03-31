@@ -13,5 +13,5 @@ exec 1>&2
 
 touch smarthost.env
 
-systemctl --user enable kickstart.service
-systemctl --user restart kickstart.service
+systemctl --user enable minthcm.service
+systemctl --user restart minthcm.service
