@@ -1,0 +1,50 @@
+#
+# Copyright (C) 2022 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+[Unit]
+Description=Podman  minthcm-app.service
+BindsTo=minthcm.service
+After=minthcm.service mariadb-app.service elastic-app.service
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+EnvironmentFile=%S/state/environment
+EnvironmentFile=-%S/state/smarthost.env
+WorkingDirectory=%S/state
+Restart=always
+TimeoutStopSec=70
+ExecStartPre=/bin/mkdir -p tmp
+ExecStartPre=/bin/rm -f %t/minthcm-app.pid %t/minthcm-app.ctr-id
+ExecStartPre=-runagent discover-smarthost
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/minthcm-app.pid \
+    --cidfile %t/minthcm-app.ctr-id --cgroups=no-conmon \
+    --pod-id-file %t/minthcm.pod-id --replace -d --name  minthcm-app \
+    --volume minthcm_www:/var/www/html \
+    --volume minthcm_cron:/var/spool/cron/crontabs \
+    --env DB_HOST=127.0.0.1 \
+    --env DB_PORT=3306 \
+    --env DB_NAME=minthcm \
+    --env DB_USER=root \
+    --env DB_PASS=minthcm \
+    --env MINT_URL=${TRAEFIK_HOST} \
+    --env MINT_USER=admin \
+    --env MINT_PASS=minthcm \
+    --env ELASTICSEARCH_HOST=127.0.0.1 \
+    --env ELASTICSEARCH_PORT=9200 \
+    --env ELASTICSEARCH_USERNAME=elastic \
+    --env ELASTICSEARCH_PASSWORD=changeme \
+    --env INSTALL_DEMO_DATA=no \
+    --env SSL=no \
+    --env REBUILD_FRONTEND=no \
+    ${MINTHCM_IMAGE}
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/minthcm-app.ctr-id -t 10
+ExecReload=/usr/bin/podman kill -s HUP minthcm-app
+SyslogIdentifier=%u
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/minthcm-app.ctr-id
+PIDFile=%t/minthcm-app.pid
+Type=forking
+
+[Install]
+WantedBy=default.target
