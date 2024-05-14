@@ -144,7 +144,7 @@ MARIADB_DB_USER=minthcm
 MARIADB_DB_PASSWORD=minthcm
 MARIADB_DB_PORT=3306
 HOME=/root
-```
+``` 
 
 you can run a shell inside the container
 
