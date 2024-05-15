@@ -72,6 +72,11 @@ You can retrieve the configuration with
 ```
 api-cli run get-configuration --agent module/minthcm1
 ```
+## Update 
+
+```shell
+api-cli run update-module --data '{"module_url":"ghcr.io/geniusdynamics/minthcm:latest","instances":["minthcm1"],"force":true}'
+```
 
 ## Uninstall
 
