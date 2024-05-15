@@ -7,12 +7,12 @@
 
 set -e
 
-if ! systemctl --user -q is-active kickstart.service; then
+if ! systemctl --user -q is-active minthcm.service; then
     exit 0
 fi
 
 podman exec mariadb-app mysqldump \
-        --databases kickstart \
+        --databases minthcm \
         --default-character-set=utf8mb4 \
         --skip-dump-date \
         --ignore-table=mysql.event \
