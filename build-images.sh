@@ -45,7 +45,7 @@ buildah config --entrypoint=/ \
     --label="org.nethserver.authorizations=traefik@node:routeadm" \
     --label="org.nethserver.tcp-ports-demand=1" \
     --label="org.nethserver.rootfull=0" \
-    --label="org.nethserver.images=docker.io/mariadb:10.11.5 docker.io/minthcm/minthcm docker.elastic.co/elasticsearch/elasticsearch:7.9.3" \
+    --label="org.nethserver.images=docker.io/mariadb:10.11.5 docker.io/minthcm/minthcm:latest docker.elastic.co/elasticsearch/elasticsearch:7.9.3" \
     "${container}"
 # Commit the image
 buildah commit "${container}" "${repobase}/${reponame}"
