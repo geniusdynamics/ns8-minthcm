@@ -12,10 +12,10 @@ After=minthcm.service mariadb-app.service
 Environment=PODMAN_SYSTEMD_UNIT=%n
 EnvironmentFile=%S/state/environment
 EnvironmentFile=-%S/state/smarthost.env
-Environment="node.name=es1"
-Environment="cluster.name=minthcm"
-Environment="discovery.type=single-node"
-Environment="xpack.security.enabled=false"
+Environment="node_name=es1"
+Environment="cluster_name=minthcm"
+Environment="discovery_type=single-node"
+Environment="xpack_security_enabled=false"
 Environment="ES_JAVA_OPTS=-Xms512m -Xmx512m"
 WorkingDirectory=%S/state
 Restart=always

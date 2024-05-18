@@ -33,12 +33,16 @@ To start a new module from it:
 
 Instantiate the module with:
 
-    add-module ghcr.io/geniusdynamics/minthcm:latest 1
+```shell
+add-module ghcr.io/geniusdynamics/minthcm:latest 1
+```
 
 The output of the command will return the instance name.
 Output example:
-
-    {"module_id": "minthcm1", "image_name": "minthcm", "image_url": "ghcr.io/geniusdynamics/minthcm:latest"}
+```shell
+  {"module_id": "minthcm1", "image_name": "minthcm", "image_url": "ghcr.io/geniusdynamics/minthcm:latest"}
+```
+  
 
 ## Configure
 
@@ -69,7 +73,7 @@ The above command will:
 ## Get the configuration
 You can retrieve the configuration with
 
-```
+```shell
 api-cli run get-configuration --agent module/minthcm1
 ```
 ## Update 
@@ -81,8 +85,10 @@ api-cli run update-module --data '{"module_url":"ghcr.io/geniusdynamics/minthcm:
 ## Uninstall
 
 To uninstall the instance:
-
-    remove-module --no-preserve minthcm1
+```shell
+remove-module --no-preserve minthcm1
+```
+    
 
 ## Smarthost setting discovery
 
