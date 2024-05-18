@@ -25,7 +25,7 @@ ExecStartPre=/bin/rm -f %t/elastic-app.pid %t/elastic-app.ctr-id
 ExecStartPre=-runagent discover-smarthost
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/elastic-app.pid \
     --cidfile %t/elastic-app.ctr-id --cgroups=no-conmon \
-    --pod-id-file %t/elastic.pod-id --replace -d --name  elastic-app \
+    --pod-id-file %t/minthcm.pod-id  --replace -d --name  elastic-app \
     --volume minthcm_es:/usr/share/elasticsearch/data \
     ${ELASTIC_SEARCH_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/elastic-app.ctr-id -t 10
