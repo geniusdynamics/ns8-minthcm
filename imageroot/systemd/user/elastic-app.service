@@ -27,6 +27,8 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/elastic-app.pid \
     --cidfile %t/elastic-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/minthcm.pod-id  --replace -d --name  elastic-app \
     --volume minthcm_es:/usr/share/elasticsearch/data \
+    --volume certs:/usr/share/elasticsearch/config/certs \
+    --env ELASTIC_PASSWORD=adminpassworddjad \
     ${ELASTICSEARCH_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/elastic-app.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP elastic-app
