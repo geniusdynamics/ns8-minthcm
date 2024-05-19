@@ -32,8 +32,6 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/elastic-app.pid \
     --env ELASTIC_PASSWORD=adminpassworddjad \
     --env "discovery.type=single-node" \
     --env "discovery.seed_hosts=localhost,127.0.0.1, ${TRAEFIK_HOST}" \
-    --ulimit memlock=-1:-1 \
-    --ulimit nofile=65536:65536 \
     ${ELASTICSEARCH_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/elastic-app.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP elastic-app
