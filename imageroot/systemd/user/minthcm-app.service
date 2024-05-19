@@ -18,10 +18,10 @@ TimeoutStopSec=70
 ExecStartPre=/bin/mkdir -p tmp
 ExecStartPre=/bin/rm -f %t/minthcm-app.pid %t/minthcm-app.ctr-id
 ExecStartPre=-runagent discover-smarthost
-ExecStart=/bin/sh -c "/usr/bin/podman run --conmon-pidfile %t/minthcm-app.pid \
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/minthcm-app.pid \
     --cidfile %t/minthcm-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/minthcm.pod-id --replace -d --name  minthcm-app \
-    --volume minthcm_www:/var/www/html:Z \
+    --volume minthcm_www:/var/www/MintHCM:Z \
     --volume minthcm_cron:/var/spool/cron/crontabs:Z \
     --env DB_HOST=127.0.0.1 \
     --env DB_PORT=3306 \
@@ -38,8 +38,7 @@ ExecStart=/bin/sh -c "/usr/bin/podman run --conmon-pidfile %t/minthcm-app.pid \
     --env INSTALL_DEMO_DATA=no \
     --env SSL=no \
     --env REBUILD_FRONTEND=no \
-    ${MINTHCM_IMAGE} \
-    /bin/bash -c 'chmod -R 755 /var/www/html && chmod -R 755 /var/spool/cron/crontabs'"
+    ${MINTHCM_IMAGE}
 
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/minthcm-app.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP minthcm-app
