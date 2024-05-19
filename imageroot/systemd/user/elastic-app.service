@@ -16,6 +16,7 @@ Environment="node_name=es1"
 Environment="cluster_name=minthcm"
 Environment="discovery_type=single-node"
 Environment="xpack_security_enabled=false"
+Environment="xpack_security_enabled=false"
 Environment="ES_JAVA_OPTS=-Xms512m -Xmx512m"
 WorkingDirectory=%S/state
 Restart=always
@@ -29,6 +30,8 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/elastic-app.pid \
     --volume minthcm_es:/usr/share/elasticsearch/data \
     --volume certs:/usr/share/elasticsearch/config/certs \
     --env ELASTIC_PASSWORD=adminpassworddjad \
+    --env "discovery.type=single-node" \
+     --env "discovery.seed_hosts=localhost,127.0.0.1, ${TRAEFIK_HOST}" \
     ${ELASTICSEARCH_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/elastic-app.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP elastic-app
