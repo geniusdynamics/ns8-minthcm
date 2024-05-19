@@ -39,6 +39,8 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/minthcm-app.pid \
     --env SSL=no \
     --env REBUILD_FRONTEND=no \
     ${MINTHCM_IMAGE}
+
+ExecStartPost=/bin/sleep 10
 ExecStartPost=-/usr/bin/podman exec -ti minthcm-app bash -c "chmod -R 755 /var/www/html"
 ExecStartPost=-/usr/bin/podman exec -ti minthcm-app bash -c "chmod -R 755 /var/spool/cron/crontabs"
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/minthcm-app.ctr-id -t 10
