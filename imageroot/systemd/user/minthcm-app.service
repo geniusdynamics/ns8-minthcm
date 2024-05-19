@@ -21,8 +21,8 @@ ExecStartPre=-runagent discover-smarthost
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/minthcm-app.pid \
     --cidfile %t/minthcm-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/minthcm.pod-id --replace -d --name  minthcm-app \
-    --volume minthcm_www:/var/www/html \
-    --volume minthcm_cron:/var/spool/cron/crontabs \
+    --volume minthcm_www:/var/www/html:Z \
+    --volume minthcm_cron:/var/spool/cron/crontabs:Z \
     --env DB_HOST=127.0.0.1 \
     --env DB_PORT=3306 \
     --env DB_NAME=minthcm \
