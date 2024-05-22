@@ -1,3 +1,48 @@
+##
+## Copyright (C) 2022 Nethesis S.r.l.
+## SPDX-License-Identifier: GPL-3.0-or-later
+##
+#
+#[Unit]
+#Description=Podman  elastic-app.service
+#BindsTo=minthcm.service
+#After=minthcm.service mariadb-app.service
+#
+#[Service]
+#Environment=PODMAN_SYSTEMD_UNIT=%n
+#EnvironmentFile=%S/state/environment
+#EnvironmentFile=-%S/state/smarthost.env
+#Environment="node_name=es1"
+#Environment="cluster_name=minthcm"
+#Environment="discovery_type=single-node"
+#Environment="xpack_security_enabled=false"
+#Environment="xpack_security_enabled=false"
+#Environment="ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#WorkingDirectory=%S/state
+#Restart=always
+#TimeoutStopSec=70
+#ExecStartPre=/bin/mkdir -p tmp
+#ExecStartPre=/bin/rm -f %t/elastic-app.pid %t/elastic-app.ctr-id
+#ExecStartPre=-runagent discover-smarthost
+#ExecStart=/usr/bin/podman run --conmon-pidfile %t/elastic-app.pid \
+#    --cidfile %t/elastic-app.ctr-id --cgroups=no-conmon \
+#    --pod-id-file %t/minthcm.pod-id  --replace -d --name  elastic-app \
+#    --volume minthcm_es:/usr/share/elasticsearch/data \
+#    --volume certs:/usr/share/elasticsearch/config/certs \
+#    --env ELASTIC_PASSWORD=adminpassworddjad \
+#    --env "discovery.type=single-node" \
+#    --env "discovery.seed_hosts=localhost,127.0.0.1, ${TRAEFIK_HOST}" \
+#    ${ELASTICSEARCH_IMAGE}
+#ExecStop=/usr/bin/podman stop --ignore --cidfile %t/elastic-app.ctr-id -t 10
+#ExecReload=/usr/bin/podman kill -s HUP elastic-app
+#SyslogIdentifier=%u
+#ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/elastic-app.ctr-id
+#PIDFile=%t/elastic-app.pid
+#Type=forking
+#
+#[Install]
+#WantedBy=default.target
+
 #
 # Copyright (C) 2022 Nethesis S.r.l.
 # SPDX-License-Identifier: GPL-3.0-or-later
@@ -12,12 +57,6 @@ After=minthcm.service mariadb-app.service
 Environment=PODMAN_SYSTEMD_UNIT=%n
 EnvironmentFile=%S/state/environment
 EnvironmentFile=-%S/state/smarthost.env
-Environment="node_name=es1"
-Environment="cluster_name=minthcm"
-Environment="discovery_type=single-node"
-Environment="xpack_security_enabled=false"
-Environment="xpack_security_enabled=false"
-Environment="ES_JAVA_OPTS=-Xms512m -Xmx512m"
 WorkingDirectory=%S/state
 Restart=always
 TimeoutStopSec=70
@@ -29,9 +68,14 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/elastic-app.pid \
     --pod-id-file %t/minthcm.pod-id  --replace -d --name  elastic-app \
     --volume minthcm_es:/usr/share/elasticsearch/data \
     --volume certs:/usr/share/elasticsearch/config/certs \
+    --env node_name=es1 \
+    --env cluster_name=minthcm_elastic \
+    --env discovery_type=single-node \
+    --env xpack_security_enabled=false \
+    --env ES_JAVA_OPTS=-Xms512m -Xmx512m \
     --env ELASTIC_PASSWORD=adminpassworddjad \
-    --env "discovery.type=single-node" \
-    --env "discovery.seed_hosts=localhost,127.0.0.1, ${TRAEFIK_HOST}" \
+    --env "discovery.type"=single-node \
+    --env "discovery.seed_hosts"=localhost,127.0.0.1 \
     ${ELASTICSEARCH_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/elastic-app.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP elastic-app
