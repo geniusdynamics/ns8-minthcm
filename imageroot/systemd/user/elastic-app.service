@@ -69,8 +69,9 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/elastic-app.pid \
     --pod-id-file %t/minthcm.pod-id  --replace -d --name  elastic-app \
     --volume minthcm_es:/usr/share/elasticsearch/data \
     --volume certs:/usr/share/elasticsearch/config/certs \
+    --publish 9200:9200 \
     --env node_name=es1 \
-    --env cluster_name=minthcm \
+    --env cluster_name=minthcm_elastic \
     --env discovery_type=single-node \
     --env xpack_security_enabled=false \
     --env ELASTIC_PASSWORD=adminpassworddjad \
