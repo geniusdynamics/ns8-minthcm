@@ -54,6 +54,7 @@ BindsTo=minthcm.service
 After=minthcm.service mariadb-app.service
 
 [Service]
+Environment="ES_JAVA_OPTS=-Xms512m -Xmx512m"
 Environment=PODMAN_SYSTEMD_UNIT=%n
 EnvironmentFile=%S/state/environment
 EnvironmentFile=-%S/state/smarthost.env
@@ -72,7 +73,6 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/elastic-app.pid \
     --env cluster_name=minthcm_elastic \
     --env discovery_type=single-node \
     --env xpack_security_enabled=false \
-    --env ES_JAVA_OPTS=-Xms512m -Xmx512m \
     --env ELASTIC_PASSWORD=adminpassworddjad \
     --env "discovery.type"=single-node \
     --env "discovery.seed_hosts"=localhost,127.0.0.1 \
