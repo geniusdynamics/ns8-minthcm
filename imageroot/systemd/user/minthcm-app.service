@@ -5,7 +5,7 @@
 
 [Unit]
 Description=Podman  minthcm-app.service
-BindsTo=minthcm.service
+Wants=elastic-app.service
 After=minthcm.service mariadb-app.service elastic-app.service
 
 [Service]
