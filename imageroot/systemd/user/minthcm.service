@@ -10,8 +10,8 @@
 
 [Unit]
 Description=Podman minthcm.service
-Requires=mariadb-app.service minthcm-app.service elastic-app.service
-Before=mariadb-app.service minthcm-app.service elastic-app.service
+Requires=mariadb-app.service elastic-app.service minthcm-app.service
+Before=mariadb-app.service elastic-app.service minthcm-app.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
