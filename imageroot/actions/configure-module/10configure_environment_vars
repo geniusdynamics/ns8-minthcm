@@ -21,11 +21,7 @@ data = json.load(sys.stdin)
 # agent.set_env("MAIL_SERVER", data["mail_server"])
 # agent.set_env("LDAP_DOMAIN", data["ldap_domain"])
 
-# you can add default values for the following variables
-# agent.set_env("MAIL_DOMAIN",data.get("mail_domain",""))
-# agent.set_env("WOWORKERSCOUNT",data.get("workers_count",3))
-# agent.set_env("AUXILIARYACCOUNT",data.get("auxiliary_account",True))
-# agent.set_env("ACTIVESYNC",data.get("activesync",False))
+agent.set_env("HOST", data.get("host", ""))
 
 
 # Make sure everything is saved inside the environment file

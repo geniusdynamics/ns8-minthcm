@@ -21,21 +21,21 @@ ExecStartPre=-runagent discover-smarthost
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/minthcm-app.pid \
     --cidfile %t/minthcm-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/minthcm.pod-id --replace -d --name  minthcm-app \
-    --volume minthcm_www:/var/www/MintHCM:Z \
-    --volume minthcm_cron:/var/spool/cron/crontabs:Z \
-    --env DB_HOST=127.0.0.1 \
+    --volume minthcm_www:/var/www/MintHCM/:Z \
+    --volume minthcm_cron:/var/spool/cron/crontabs/:Z \
+    --env DB_HOST=mariadb-app \
     --env DB_PORT=3306 \
     --env DB_NAME=minthcm \
-    --env DB_USER=root \
+    --env DB_USER=minthcm \
     --env DB_PASS=Nethesis,1234 \
-    --env MINT_URL=${TRAEFIK_HOST} \
+    --env MINT_URL=${HOST} \
     --env MINT_USER=admin \
     --env MINT_PASS=minthcm \
     --env ELASTICSEARCH_HOST=elastic-app \
     --env ELASTICSEARCH_PORT=9200 \
     --env ELASTICSEARCH_USERNAME=elastic \
     --env ELASTICSEARCH_PASSWORD=adminpassworddjad \
-    --env INSTALL_DEMO_DATA=no \
+    --env INSTALL_DEMO_DATA=yes \
     --env SSL=no \
     --env REBUILD_FRONTEND=no \
     ${MINTHCM_IMAGE}
