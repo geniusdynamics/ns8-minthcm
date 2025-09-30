@@ -6,7 +6,7 @@
 [Unit]
 Description=Podman  elastic-app.service
 BindsTo=minthcm.service
-After=minthcm.service mariadb-app.service
+After=minthcm.service percona-app.service
 
 [Service]
 Environment="ES_JAVA_OPTS=-Xms512m -Xmx512m"

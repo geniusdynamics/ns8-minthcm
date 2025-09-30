@@ -6,7 +6,7 @@
 [Unit]
 Description=Podman  minthcm-app.service
 Wants=elastic-app.service
-After=minthcm.service mariadb-app.service elastic-app.service
+After=minthcm.service percona-app.service elastic-app.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
@@ -23,21 +23,7 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/minthcm-app.pid \
     --pod-id-file %t/minthcm.pod-id --replace -d --name  minthcm-app \
     --volume minthcm_www:/var/www/MintHCM/:Z \
     --volume minthcm_cron:/var/spool/cron/crontabs/:Z \
-    --env DB_HOST=mariadb-app \
-    --env DB_PORT=3306 \
-    --env DB_NAME=minthcm \
-    --env DB_USER=minthcm \
-    --env DB_PASS=Nethesis,1234 \
-    --env MINT_URL=${HOST} \
-    --env MINT_USER=admin \
-    --env MINT_PASS=minthcm \
-    --env ELASTICSEARCH_HOST=elastic-app \
-    --env ELASTICSEARCH_PORT=9200 \
-    --env ELASTICSEARCH_USERNAME=elastic \
-    --env ELASTICSEARCH_PASSWORD=adminpassworddjad \
-    --env INSTALL_DEMO_DATA=yes \
-    --env SSL=no \
-    --env REBUILD_FRONTEND=no \
+    --env-file=minthcm.env \
     ${MINTHCM_IMAGE}
 
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/minthcm-app.ctr-id -t 10
