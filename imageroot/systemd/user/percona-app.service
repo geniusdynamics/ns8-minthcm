@@ -1,0 +1,33 @@
+#
+# Copyright (C) 2022 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+[Unit]
+Description=Podman percona-app.service
+BindsTo=minthcm.service
+After=minthcm.service
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+EnvironmentFile=%S/state/environment
+# EnvironmentFile=%S/state/secrets/passwords.secret
+Restart=always
+TimeoutStopSec=70
+ExecStartPre=/bin/rm -f %t/percona-app.pid %t/percona-app.ctr-id
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/percona-app.pid \
+    --cidfile %t/percona-app.ctr-id --cgroups=no-conmon \
+    --pod-id-file %t/minthcm.pod-id --replace -d --name percona-app \
+    --env-file=%S/state/percona.env \
+    --volume mysql-data:/var/lib/mysql/:Z \
+    ${PERCONA_IMAGE} \
+    --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/percona-app.ctr-id -t 10
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/percona-app.ctr-id
+ExecReload=/usr/bin/podman kill -s HUP percona-app
+SyslogIdentifier=%u
+PIDFile=%t/percona-app.pid
+Type=forking
+
+[Install]
+WantedBy=default.target
