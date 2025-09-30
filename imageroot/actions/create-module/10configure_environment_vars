@@ -36,7 +36,10 @@ MYSQL_PASSWORD = generate_random_password()
 db_config = {
     "MYSQL_ROOT_PASSWORD": MYSQL_ROOT_PASSWORD,
     "MYSQL_PASSWORD": MYSQL_PASSWORD,
+    "SYS_NICE": "CAP_SYS_NICE",
+    "MYSQL_DEFAULT_AUTHENTICATION_PLUGIN": "caching_sha2_password",
 }
+
 agent.write_envfile("percona.env", db_config)
 
 
