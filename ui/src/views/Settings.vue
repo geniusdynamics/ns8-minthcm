@@ -24,8 +24,8 @@
         <cv-tile light>
           <cv-form @submit.prevent="configureModule">
             <cv-text-input
-              :label="$t('settings.kickstart_fqdn')"
-              placeholder="kickstart.example.org"
+              :label="$t('settings.minthcm_fqdn')"
+              placeholder="minthcm.example.org"
               v-model.trim="host"
               class="mg-bottom"
               :invalid-message="$t(error.host)"
@@ -33,6 +33,28 @@
               ref="host"
             >
             </cv-text-input>
+            <cv-text-input
+              :label="$t('settings.admin')"
+              placeholder="admin"
+              v-model.trim="admin"
+              class="mg-bottom"
+              :invalid-message="$t(error.admin)"
+              :disabled="loading.getConfiguration || loading.configureModule"
+              ref="admin"
+            >
+            </cv-text-input>
+            <cv-text-input
+              :label="$t('settings.password')"
+              placeholder="password"
+              type="password"
+              v-model="password"
+              class="mg-bottom"
+              :invalid-message="$t(error.password)"
+              :disabled="loading.getConfiguration || loading.configureModule"
+              ref="password"
+            >
+            </cv-text-input>
+
             <cv-toggle
               value="letsEncrypt"
               :label="$t('settings.lets_encrypt')"
@@ -61,12 +83,11 @@
                 $t("settings.enabled")
               }}</template>
             </cv-toggle>
-              <!-- advanced options -->
+            <!-- advanced options -->
             <cv-accordion ref="accordion" class="maxwidth mg-bottom">
               <cv-accordion-item :open="toggleAccordion[0]">
                 <template slot="title">{{ $t("settings.advanced") }}</template>
-                <template slot="content">
-                </template>
+                <template slot="content"> </template>
               </cv-accordion-item>
             </cv-accordion>
             <cv-row v-if="error.configureModule">
@@ -125,6 +146,8 @@ export default {
       host: "",
       isLetsEncryptEnabled: false,
       isHttpToHttpsEnabled: true,
+      admin: "",
+      password: "",
       loading: {
         getConfiguration: false,
         configureModule: false,
@@ -135,6 +158,8 @@ export default {
         host: "",
         lets_encrypt: "",
         http2https: "",
+        password: "",
+        admin: "",
       },
     };
   },
@@ -164,13 +189,13 @@ export default {
       // register to task error
       this.core.$root.$once(
         `${taskAction}-aborted-${eventId}`,
-        this.getConfigurationAborted
+        this.getConfigurationAborted,
       );
 
       // register to task completion
       this.core.$root.$once(
         `${taskAction}-completed-${eventId}`,
-        this.getConfigurationCompleted
+        this.getConfigurationCompleted,
       );
 
       const res = await to(
@@ -181,7 +206,7 @@ export default {
             isNotificationHidden: true,
             eventId,
           },
-        })
+        }),
       );
       const err = res[0];
 
@@ -202,6 +227,8 @@ export default {
       this.host = config.host;
       this.isLetsEncryptEnabled = config.lets_encrypt;
       this.isHttpToHttpsEnabled = config.http2https;
+      this.admin = config.admin;
+      this.password = config.password;
 
       this.loading.getConfiguration = false;
       this.focusElement("host");
@@ -250,19 +277,19 @@ export default {
       // register to task error
       this.core.$root.$once(
         `${taskAction}-aborted-${eventId}`,
-        this.configureModuleAborted
+        this.configureModuleAborted,
       );
 
       // register to task validation
       this.core.$root.$once(
         `${taskAction}-validation-failed-${eventId}`,
-        this.configureModuleValidationFailed
+        this.configureModuleValidationFailed,
       );
 
       // register to task completion
       this.core.$root.$once(
         `${taskAction}-completed-${eventId}`,
-        this.configureModuleCompleted
+        this.configureModuleCompleted,
       );
       const res = await to(
         this.createModuleTaskForApp(this.instanceName, {
@@ -271,6 +298,8 @@ export default {
             host: this.host,
             lets_encrypt: this.isLetsEncryptEnabled,
             http2https: this.isHttpToHttpsEnabled,
+            admin: this.admin,
+            password: this.password,
           },
           extra: {
             title: this.$t("settings.instance_configuration", {
@@ -279,7 +308,7 @@ export default {
             description: this.$t("settings.configuring"),
             eventId,
           },
-        })
+        }),
       );
       const err = res[0];
 
