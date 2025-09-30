@@ -24,6 +24,7 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/minthcm-app.pid \
     --volume minthcm_www:/var/www/MintHCM/:Z \
     --volume minthcm_cron:/var/spool/cron/crontabs/:Z \
     --env-file=minthcm.env \
+    --env-file=minthcm_db.env \
     ${MINTHCM_IMAGE}
 
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/minthcm-app.ctr-id -t 10
