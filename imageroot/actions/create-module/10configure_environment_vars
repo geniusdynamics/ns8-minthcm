@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+
+#
+# Copyright (C) 2022 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+import json
+import sys
+import agent
+import os
+import base64
+
+# Try to parse the stdin as JSON.
+# If parsing fails, output everything to stderr
+data = json.load(sys.stdin)
+
+# This is specific to you module, so you need to change it accordingly.
+# Database Configuration
+# DB_HOST=localhost # May need to be changed to `DB_HOST=db` if using devcontainer
+# DB_PORT=5432
+# POSTGRES_PASSWORD=postgres
+# POSTGRES_USER=postgres
+
+
+def generate_random_password():
+    password = os.urandom(16).hex()
+    return password[:16]
+
+
+# This is specific to you module, so you need to change it accordingly.
+
+MYSQL_ROOT_PASSWORD = generate_random_password()
+MYSQL_PASSWORD = generate_random_password()
+
+db_config = {
+    "MYSQL_ROOT_PASSWORD": MYSQL_ROOT_PASSWORD,
+    "MYSQL_PASSWORD": MYSQL_PASSWORD,
+}
+agent.write_envfile("percona.env", db_config)
+
+
+# just before starting systemd unit
+agent.dump_env()
