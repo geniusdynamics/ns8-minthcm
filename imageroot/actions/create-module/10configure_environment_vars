@@ -39,6 +39,14 @@ db_config = {
     "SYS_NICE": "CAP_SYS_NICE",
     "MYSQL_DEFAULT_AUTHENTICATION_PLUGIN": "caching_sha2_password",
 }
+db_app_conf = {
+    "DB_HOST": "percona-app",
+    "DB_PORT": "3306",
+    "DB_NAME": "minthcm",
+    "DB_USER": "root",
+    "DB_PASS": MYSQL_ROOT_PASSWORD,
+}
+agent.write_envfile("minthcm_db.env", db_app_conf)
 
 agent.write_envfile("percona.env", db_config)
 
