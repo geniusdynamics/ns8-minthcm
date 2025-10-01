@@ -32,12 +32,26 @@ def generate_random_password():
 
 MYSQL_ROOT_PASSWORD = generate_random_password()
 MYSQL_PASSWORD = generate_random_password()
+ELASTIC_PASSWORD = generate_random_password()
 
 db_config = {
     "MYSQL_ROOT_PASSWORD": MYSQL_ROOT_PASSWORD,
     "MYSQL_PASSWORD": MYSQL_PASSWORD,
     "SYS_NICE": "CAP_SYS_NICE",
     "MYSQL_DEFAULT_AUTHENTICATION_PLUGIN": "caching_sha2_password",
+}
+elastic_app = {
+    "node_name": "es1",
+    "cluster.name": "minthcm",
+    "discovery.type": "single-node",
+    "xpack.security.enabled": "false",
+    "ES_JAVA_OPTS": "-Xms512m -Xmx512m",
+}
+elastic = {
+    "ELASTICSEARCH_HOST": "elastic-app",
+    "ELASTICSEARCH_PORT": "9200",
+    "ELASTICSEARCH_USERNAME": "elastic",
+    "ELASTICSEARCH_PASSWORD": ELASTIC_PASSWORD,
 }
 db_app_conf = {
     "DB_HOST": "percona-app",
@@ -46,6 +60,11 @@ db_app_conf = {
     "DB_USER": "root",
     "DB_PASS": MYSQL_ROOT_PASSWORD,
 }
+db_app_conf.update(elastic)
+elastic_app.update(elastic)
+
+agent.write_envfile("elastic.env", elastic_app)
+
 agent.write_envfile("minthcm_db.env", db_app_conf)
 
 agent.write_envfile("percona.env", db_config)

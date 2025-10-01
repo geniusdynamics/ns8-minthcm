@@ -27,15 +27,6 @@ config = {
 
 agent.write_envfile("minthcm.env", config)
 
-elastic_app = {
-    "node_name": "es1",
-    "cluster.name": "minthcm",
-    "discovery.type": "single-node",
-    "xpack.security.enabled": "false",
-    "ES_JAVA_OPTS": "-Xms512m -Xmx512m",
-}
-agent.write_envfile("elastic.env", elastic_app)
-
 
 # Make sure everything is saved inside the environment file
 # just before starting systemd unit
