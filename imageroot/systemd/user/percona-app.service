@@ -10,15 +10,15 @@ After=minthcm.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
-EnvironmentFile=%S/state/environment
-# EnvironmentFile=%S/state/secrets/passwords.secret
+EnvironmentFile=%E/state/environment
+# EnvironmentFile=%E/state/secrets/passwords.secret
 Restart=always
 TimeoutStopSec=70
 ExecStartPre=/bin/rm -f %t/percona-app.pid %t/percona-app.ctr-id
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/percona-app.pid \
     --cidfile %t/percona-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/minthcm.pod-id --replace -d --name percona-app \
-    --env-file=%S/state/percona.env \
+    --env-file=%E/state/percona.env \
     --volume mysql-data:/var/lib/mysql/:Z \
     ${PERCONA_IMAGE} \
     --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci

@@ -11,14 +11,12 @@ After=minthcm.service percona-app.service
 [Service]
 Environment="ES_JAVA_OPTS=-Xms512m -Xmx512m"
 Environment=PODMAN_SYSTEMD_UNIT=%n
-EnvironmentFile=%S/state/environment
-EnvironmentFile=-%S/state/smarthost.env
-WorkingDirectory=%S/state
+EnvironmentFile=%E/state/environment
+WorkingDirectory=%E/state
 Restart=always
 TimeoutStopSec=70
 ExecStartPre=/bin/mkdir -p tmp
 ExecStartPre=/bin/rm -f %t/elastic-app.pid %t/elastic-app.ctr-id
-ExecStartPre=-runagent discover-smarthost
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/elastic-app.pid \
     --cidfile %t/elastic-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/minthcm.pod-id  --replace -d --name  elastic-app \
