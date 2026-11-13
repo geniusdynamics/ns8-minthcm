@@ -1,19 +1,22 @@
 {
   "name": "kickstart",
   "description": {
-    "en": "My kickstart module"
+    "en": "MintHCM is an open source human capital management system for employees, recruitment, leave and company records.",
+    "it": "MintHCM è un sistema open source di gestione del capitale umano per dipendenti, selezione, ferie e anagrafiche."
   },
-  "categories": [],
+  "categories": [
+    "office"
+  ],
   "authors": [
     {
-      "name": "Name Surname",
-      "email": "author@yourmail.org"
+      "name": "Genius Dynamics",
+      "email": "support@genius.ke"
     }
   ],
   "docs": {
     "documentation_url": "https://docs.kickstart.com/",
-    "bug_url": "https://github.com/NethServer/dev",
-    "code_url": "https://github.com/author/ns8-kickstart"
+    "bug_url": "https://github.com/geniusdynamics/ns8-minthcm/issues",
+    "code_url": "https://github.com/geniusdynamics/ns8-minthcm"
   },
-  "source": "ghcr.io/nethserver/kickstart"
+  "source": "ghcr.io/geniusdynamics/minthcm"
 }

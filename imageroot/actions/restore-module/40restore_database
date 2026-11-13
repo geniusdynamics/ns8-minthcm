@@ -1,41 +1,31 @@
 #!/bin/bash
 
 #
-# Copyright (C) 2022 Nethesis S.r.l.
+# Copyright (C) 2026 Genius Dynamics
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 
 set -e -o pipefail
 exec 1>&2 # Redirect any output to the journal (stderr)
 
-# Prepare an initialization script that restores the dump file
+# Load the dump into a fresh Percona data volume with the restored
+# credentials (percona.env is part of the backup), then stop.
 mkdir -vp initdb.d
-mv -v kickstart.sql initdb.d
-#do the bash file to restore and exit once done
-cat - >initdb.d/zz_kickstart_restore.sh <<'EOS'
-# Print additional information:
-mysql --version
-# The script is sourced, override entrypoint args and exit:
+mv -v minthcm.sql initdb.d
+cat - >initdb.d/zz_minthcm_restore.sh <<'EOS'
+# The script is sourced by the image entrypoint: stop the temporary server
 set -- true
 docker_temp_server_stop
 exit 0
 EOS
-
-# once we exit we remove initdb.d
 trap 'rm -rfv initdb.d/' EXIT
 
-# we start a container to initiate a database and load the dump
-# at the end of kickstart_restore.sh the dump is loaded and 
-# we exit the container
 podman run \
   --rm \
   --interactive \
   --network=none \
   --volume=./initdb.d:/docker-entrypoint-initdb.d:z \
   --volume mysql-data:/var/lib/mysql/:Z \
-  --env MARIADB_ROOT_PASSWORD=Nethesis,1234 \
-  --env MARIADB_DATABASE=kickstart \
-  --env MARIADB_USER=kickstart \
-  --env MARIADB_PASSWORD=kickstart \
+  --env-file=percona.env \
   --replace --name=restore_db \
-  ${MARIADB_IMAGE}
+  ${PERCONA_IMAGE}

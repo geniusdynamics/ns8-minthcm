@@ -5,39 +5,24 @@
 
 [Unit]
 Description=Podman  minthcm-app.service
-BindsTo=minthcm.service
-After=minthcm.service mariadb-app.service elastic-app.service
+Wants=elastic-app.service
+After=minthcm.service percona-app.service elastic-app.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
-EnvironmentFile=%S/state/environment
-EnvironmentFile=-%S/state/smarthost.env
-WorkingDirectory=%S/state
+EnvironmentFile=%E/state/environment
+WorkingDirectory=%E/state
 Restart=always
 TimeoutStopSec=70
 ExecStartPre=/bin/mkdir -p tmp
 ExecStartPre=/bin/rm -f %t/minthcm-app.pid %t/minthcm-app.ctr-id
-ExecStartPre=-runagent discover-smarthost
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/minthcm-app.pid \
     --cidfile %t/minthcm-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/minthcm.pod-id --replace -d --name  minthcm-app \
-    --volume minthcm_www:/var/www/MintHCM:Z \
-    --volume minthcm_cron:/var/spool/cron/crontabs:Z \
-    --env DB_HOST=127.0.0.1 \
-    --env DB_PORT=3306 \
-    --env DB_NAME=minthcm \
-    --env DB_USER=root \
-    --env DB_PASS=Nethesis,1234 \
-    --env MINT_URL=${TRAEFIK_HOST} \
-    --env MINT_USER=admin \
-    --env MINT_PASS=minthcm \
-    --env ELASTICSEARCH_HOST=elastic-app \
-    --env ELASTICSEARCH_PORT=9200 \
-    --env ELASTICSEARCH_USERNAME=elastic \
-    --env ELASTICSEARCH_PASSWORD=adminpassworddjad \
-    --env INSTALL_DEMO_DATA=no \
-    --env SSL=no \
-    --env REBUILD_FRONTEND=no \
+    --volume minthcm_www:/var/www/MintHCM/:Z \
+    --volume minthcm_cron:/var/spool/cron/crontabs/:Z \
+    --env-file=minthcm.env \
+    --env-file=minthcm_db.env \
     ${MINTHCM_IMAGE}
 
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/minthcm-app.ctr-id -t 10
